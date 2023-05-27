@@ -9,6 +9,10 @@ public class GameManager : MonoBehaviour
     public Slider tempSlider;
     public TMPro.TextMeshProUGUI tempValueText;
 
+    public float atomScale = 1f;
+
+    public float minTimeToFuze = 0.1f;
+
     [SerializeField] float MeVtoK_Ratio = 0.1f;
     public GameObject electronPrefab;
     public GameObject protonPrefab;
@@ -36,8 +40,8 @@ public class GameManager : MonoBehaviour
     public float O15LiveSpan;
     public float sunTemp;
 
-    public float ppIITemp;
-    public float ppIIITemp;
+    public float pp2Temp;
+    public float pp3Temp;
     public float CNOTemp;
     public float threeAlpha;
 

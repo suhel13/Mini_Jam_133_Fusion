@@ -10,7 +10,8 @@ public class Atom : MonoBehaviour
     float atomMass;
     float radius;
     public AtomType type;
-    public bool canSpawn = true;
+    public bool canSpawn = false;
+    float lifeTime = 0;
     public Rigidbody2D rb2D;
     GameObject spawnedAtom;
 
@@ -31,11 +32,20 @@ public class Atom : MonoBehaviour
             hasLiveSpan = true;
         if (type == AtomType.B8)
             hasLiveSpan = true;
+        if (type == AtomType.N13)
+            hasLiveSpan = true;
+        if (type == AtomType.O15)
+            hasLiveSpan = true;
+        canSpawn = false;
+        init_Radius();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (canSpawn == false && lifeTime > GameManager.Instance.minTimeToFuze)
+            canSpawn = true;
+
         if (hasLiveSpan)
         {
             switch (type)
@@ -91,6 +101,7 @@ public class Atom : MonoBehaviour
             }
             livespanTimer += Time.deltaTime;
         }
+        lifeTime += Time.deltaTime;
     }
     Vector2 cacluateSpeed(Vector2 v1, Vector2 v2, float m1, float m2, float m3)
     {
@@ -128,6 +139,21 @@ public class Atom : MonoBehaviour
             case AtomType.B8:
                 return 8;
                 break;
+            case AtomType.N13:
+                return 13;
+                break;
+            case AtomType.C13:
+                return 13;
+                break;
+            case AtomType.N14:
+                return 14;
+                break;
+            case AtomType.O15:
+                return 15;
+                break;
+            case AtomType.N15:
+                return 15;
+                break;
             default:
                 return -1;
         }
@@ -135,6 +161,11 @@ public class Atom : MonoBehaviour
     float getRadius(AtomType type)
     {
         return Mathf.Sqrt(0.25f / 12f * getMass(type));
+    }
+    void init_Radius()
+    {
+        GetComponent<CircleCollider2D>().radius = radius;
+        GetComponentsInChildren<Transform>()[1].localScale = Vector3.one * radius * 2 ;
     }
     void spawnElectron()
     {
@@ -172,6 +203,21 @@ public class Atom : MonoBehaviour
                 break;
             case AtomType.C12:
                 spawnedAtom = Instantiate(GameManager.Instance.C_12Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
+                break;
+            case AtomType.N13:
+                spawnedAtom = Instantiate(GameManager.Instance.N_13Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
+                break;
+            case AtomType.C13:
+                spawnedAtom = Instantiate(GameManager.Instance.C_13Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
+                break;
+            case AtomType.N14:
+                spawnedAtom = Instantiate(GameManager.Instance.N_14Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
+                break;
+            case AtomType.O15:
+                spawnedAtom = Instantiate(GameManager.Instance.O_15Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
+                break;
+            case AtomType.N15:
+                spawnedAtom = Instantiate(GameManager.Instance.N_15Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
                 break;
         }
         spawnedAtom.GetComponent<Rigidbody2D>().velocity = cacluateSpeed(rb2D.velocity, collideAtom.rb2D.velocity, atomMass, collideAtom.atomMass, spawnedAtom.GetComponent<Atom>().atomMass);
@@ -213,27 +259,33 @@ public class Atom : MonoBehaviour
     void spawn2Atoms(Atom collideAtom, AtomType spawnType1, AtomType spawnType2)
     {
         Vector2 p0 = rb2D.velocity * atomMass + collideAtom.GetComponent<Rigidbody2D>().velocity * collideAtom.atomMass;
-
+        if (p0 == Vector2.zero)
+        {
+            p0 = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        }
         Vector2 spawn1OffsetDir = Quaternion.Euler(0f, 0f, 45f) * p0.normalized;
         Vector2 spawn2OffsetDir = Quaternion.Euler(0f, 0f, -45f) * p0.normalized;
         Tuple<float, float> velocityValue = calculate2AtomsVelocityValue(p0, getMass(spawnType1), getMass(spawnType2));
+
         spawnAtom(collideAtom, spawnType1, spawn1OffsetDir, spawn1OffsetDir * velocityValue.Item1);
-
         spawnAtom(collideAtom, spawnType2, spawn2OffsetDir, spawn2OffsetDir * velocityValue.Item2);
-
     }
 
     void spawn3Atoms(Atom collideAtom, AtomType spawnType1, AtomType spawnType2, AtomType spawnType3)
     {
         Vector2 p0 = rb2D.velocity * atomMass + collideAtom.GetComponent<Rigidbody2D>().velocity * atomMass;
+        if (p0 == Vector2.zero)
+        {
+            p0 = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        }
         spawnAtom(collideAtom, spawnType1, Vector2.zero, p0 / 3 / getMass(spawnType1));
 
         Vector2 spawn2OffsetDir = Quaternion.Euler(0f, 0f, 60f) * p0.normalized;
         Vector2 spawn3OffsetDir = Quaternion.Euler(0f, 0f, -60f) * p0.normalized;
 
         Tuple<float, float> velocityValue = calculate2AtomsVelocityValue(p0, getMass(spawnType1), getMass(spawnType2));
-        spawnAtom(collideAtom, spawnType2, spawn2OffsetDir * (getRadius(spawnType2) + getRadius(spawnType1)) * 2f, spawn2OffsetDir * p0.magnitude / 3 / getMass(spawnType2));
 
+        spawnAtom(collideAtom, spawnType2, spawn2OffsetDir * (getRadius(spawnType2) + getRadius(spawnType1)) * 2f, spawn2OffsetDir * p0.magnitude / 3 / getMass(spawnType2));
         spawnAtom(collideAtom, spawnType3, spawn3OffsetDir * (getRadius(spawnType3) + getRadius(spawnType1)) * 2f, spawn3OffsetDir * p0.magnitude / 3 / getMass(spawnType3));
     }
 
@@ -250,6 +302,7 @@ public class Atom : MonoBehaviour
                 {
                     collideAtom.canSpawn = false;
                     Debug.Log("collision p - p", this.gameObject);
+                    canSpawn = false;
 
                     spawnAtom(collideAtom, AtomType.D);
                     spawnElectron();
@@ -265,6 +318,7 @@ public class Atom : MonoBehaviour
                 {
                     Debug.Log("collision p - D", this.gameObject);
                     collideAtom.canSpawn = false;
+                    canSpawn = false;
 
                     spawnAtom(collideAtom, AtomType.He3);
                     GameManager.Instance.raiseSunTemperature(5.49f);
@@ -274,12 +328,13 @@ public class Atom : MonoBehaviour
             }
             if (collideAtom.type == AtomType.Li7)
             {
-                if (GameManager.Instance.sunTemp > 14)
+                if (GameManager.Instance.sunTemp > GameManager.Instance.pp2Temp)
                 {
                     if (canSpawn)
                     {
                         Debug.Log("collision p - Li7", this.gameObject);
                         collideAtom.canSpawn = false;
+                        canSpawn = false;
 
                         spawn2Atoms(collideAtom, AtomType.He4, AtomType.He4);
                         GameManager.Instance.raiseSunTemperature(17.35f);
@@ -290,12 +345,14 @@ public class Atom : MonoBehaviour
             }
             if (collideAtom.type == AtomType.Be7)
             {
-                if (GameManager.Instance.sunTemp > 23)
+                if (GameManager.Instance.sunTemp > GameManager.Instance.pp3Temp)
                 {
                     if (canSpawn)
                     {
                         Debug.Log("collision p - Be7", this.gameObject);
                         collideAtom.canSpawn = false;
+                        canSpawn = false;
+
                         spawnAtom(collideAtom, AtomType.B8);
                         GameManager.Instance.raiseSunTemperature(0.14f);
                         Destroy(collideAtom.gameObject);
@@ -310,6 +367,8 @@ public class Atom : MonoBehaviour
                     {
                         Debug.Log("collision p - C12", this.gameObject);
                         collideAtom.canSpawn = false;
+                        canSpawn = false;
+
                         spawnAtom(collideAtom, AtomType.N13);
                         GameManager.Instance.raiseSunTemperature(1.94f);
                         Destroy(collideAtom.gameObject);
@@ -324,6 +383,8 @@ public class Atom : MonoBehaviour
                     {
                         Debug.Log("collision p - C13", this.gameObject);
                         collideAtom.canSpawn = false;
+                        canSpawn = false;
+
                         spawnAtom(collideAtom, AtomType.N14);
                         GameManager.Instance.raiseSunTemperature(7.55f);
                         Destroy(collideAtom.gameObject);
@@ -338,6 +399,8 @@ public class Atom : MonoBehaviour
                     {
                         Debug.Log("collision p - N14", this.gameObject);
                         collideAtom.canSpawn = false;
+                        canSpawn = false;
+
                         spawnAtom(collideAtom, AtomType.O15);
                         GameManager.Instance.raiseSunTemperature(1.94f);
                         Destroy(collideAtom.gameObject);
@@ -352,6 +415,8 @@ public class Atom : MonoBehaviour
                     {
                         Debug.Log("collision p - N15", this.gameObject);
                         collideAtom.canSpawn = false;
+                        canSpawn = false;
+
                         spawn2Atoms(collideAtom, AtomType.C12, AtomType.He4);
                         GameManager.Instance.raiseSunTemperature(4.97f);
                         Destroy(collideAtom.gameObject);
@@ -366,8 +431,9 @@ public class Atom : MonoBehaviour
                 //PPI
                 if (canSpawn)
                 {
-                    collideAtom.canSpawn = false;
                     Debug.Log("collision He_3 - He_3", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
 
                     spawn3Atoms(collideAtom, AtomType.He4, AtomType.proton, AtomType.proton);
                     GameManager.Instance.raiseSunTemperature(12.85f);
@@ -377,12 +443,13 @@ public class Atom : MonoBehaviour
             }
             if (collideAtom.type == AtomType.He4)
             {
-                if (GameManager.Instance.sunTemp > 14)
+                if (GameManager.Instance.sunTemp > GameManager.Instance.pp3Temp)
                 {
                     if (canSpawn)
                     {
                         Debug.Log("collision He_3 - He_4", this.gameObject);
                         collideAtom.canSpawn = false;
+                        canSpawn = false;
 
                         spawnAtom(collideAtom, AtomType.Be7);
                         GameManager.Instance.raiseSunTemperature(1.59f);
@@ -396,12 +463,13 @@ public class Atom : MonoBehaviour
         {
             if (collideAtom.type == AtomType.He4)
             {
-                if (GameManager.Instance.sunTemp > 100)
+                if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha)
                 {
                     if (canSpawn)
                     {
                         Debug.Log("collision He_4 - He_4", this.gameObject);
                         collideAtom.canSpawn = false;
+                        canSpawn = false;
 
                         spawnAtom(collideAtom, AtomType.Be8);
                         GameManager.Instance.raiseSunTemperature(-0.09f);
@@ -412,12 +480,13 @@ public class Atom : MonoBehaviour
             }
             if(collideAtom.type == AtomType.Be8)
             {
-                if (GameManager.Instance.sunTemp > 100)
+                if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha)
                 {
                     if (canSpawn)
                     {
                         Debug.Log("collision He_4 - Be8", this.gameObject);
                         collideAtom.canSpawn = false;
+                        canSpawn = false;
 
                         spawnAtom(collideAtom, AtomType.C12);
                         GameManager.Instance.raiseSunTemperature(7.65f);
