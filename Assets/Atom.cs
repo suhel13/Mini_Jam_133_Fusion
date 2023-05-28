@@ -1,16 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using static Atom;
 using Random = UnityEngine.Random;
 
 public class Atom : MonoBehaviour
 {
-    public enum AtomType { proton, D, He3, He4, Be7, Be8, Li7, B8, C12, N13, C13, N14, O15, N15 }
+    public enum AtomType { proton, D, He3, He4, Be7, Be8, Li7, B8, C12, N13, C13, N14, O15, N15, O16, Ne20, Mg24, Si28, S32, Ni56 }
     float atomMass;
     float radius;
     public AtomType type;
-    public bool canSpawn = false;
+    public bool canSpawn = true;
     float lifeTime = 0;
     public Rigidbody2D rb2D;
     GameObject spawnedAtom;
@@ -36,7 +38,11 @@ public class Atom : MonoBehaviour
             hasLiveSpan = true;
         if (type == AtomType.O15)
             hasLiveSpan = true;
-        canSpawn = false;
+        if (type == AtomType.Mg24)
+            hasLiveSpan = true;
+        if (type == AtomType.S32)
+            hasLiveSpan = true;
+        canSpawn = true;
         init_Radius();
     }
 
@@ -98,6 +104,24 @@ public class Atom : MonoBehaviour
                         Destroy(this.gameObject);
                     }
                     break;
+                case AtomType.Mg24:
+                    if (livespanTimer >= GameManager.Instance.Mg24LiveSpan)
+                    {
+                        Debug.Log("Mg24 decay ", this.gameObject);
+                        spawn2Atoms(this, AtomType.Ne20, AtomType.He4);
+                        GameManager.Instance.raiseSunTemperature(4.62f);
+                        Destroy(this.gameObject);
+                    }
+                    break;
+                case AtomType.S32:
+                    if (livespanTimer >= GameManager.Instance.S32LiveSpan)
+                    {
+                        Debug.Log("S32 decay ", this.gameObject);
+                        spawn2Atoms(this, AtomType.Si28, AtomType.He4);
+                        GameManager.Instance.raiseSunTemperature(9.59f);
+                        Destroy(this.gameObject);
+                    }
+                    break;
             }
             livespanTimer += Time.deltaTime;
         }
@@ -114,53 +138,51 @@ public class Atom : MonoBehaviour
         {
             case AtomType.proton:
                 return 1;
-                break;
             case AtomType.D:
                 return 2;
-                break;
             case AtomType.He3:
                 return 3;
-                break;
             case AtomType.He4:
-                return 4;
-                break;
+                return 4;;
             case AtomType.Li7:
                 return 7;
-                break;
             case AtomType.C12:
                 return 12;
-                break;
             case AtomType.Be7:
                 return 7;
-                break;
             case AtomType.Be8:
                 return 8;
-                break;
             case AtomType.B8:
                 return 8;
-                break;
             case AtomType.N13:
                 return 13;
-                break;
             case AtomType.C13:
                 return 13;
-                break;
             case AtomType.N14:
                 return 14;
-                break;
             case AtomType.O15:
                 return 15;
-                break;
             case AtomType.N15:
                 return 15;
-                break;
+            case AtomType.O16:
+                return 16;
+            case AtomType.Ne20:
+                return 20;
+            case AtomType.Mg24:
+                return 24;
+            case AtomType.Si28:
+                return 28;
+            case AtomType.S32:
+                return 32;
+            case AtomType.Ni56:
+                return 56;
             default:
                 return -1;
         }
     }
     float getRadius(AtomType type)
     {
-        return Mathf.Sqrt(0.25f / 12f * getMass(type));
+        return Mathf.Pow(atomMass / 200, 1f / 3f);
     }
     void init_Radius()
     {
@@ -293,11 +315,54 @@ public class Atom : MonoBehaviour
     {
         Debug.Log("collision Enter", this.gameObject);
         Atom collideAtom = collision.collider.GetComponent<Atom>();
+
+        //pp1 works all the time
+        pp1Collisions(collideAtom);
+
+        if (GameManager.Instance.sunTemp > GameManager.Instance.pp2Temp)
+        {
+            pp2Collisions(collideAtom);
+        }
+        else if (GameManager.Instance.sunTemp > GameManager.Instance.pp3Temp)
+        {
+            pp3Collisions(collideAtom);
+        }
+        else if (GameManager.Instance.sunTemp > GameManager.Instance.CNOTemp)
+        {
+            CNO_Collisons(collideAtom);
+        }
+        else if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha)
+        {
+            threeAlphaCollisions(collideAtom);
+        }
+        else if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha2)
+        {
+            threeAlpha2Collisions(collideAtom);
+        }
+        else if (GameManager.Instance.sunTemp > GameManager.Instance.carbonBurn)
+        {
+            carbonBurnCollisions(collideAtom);
+        }
+        else if (GameManager.Instance.sunTemp > GameManager.Instance.neonBurn)
+        {
+            neonBurnCollisions(collideAtom);
+        }
+        else if (GameManager.Instance.sunTemp > GameManager.Instance.oxygenBurn)
+        {
+            oxygenBurnCollisions(collideAtom);
+        }
+        else if (GameManager.Instance.sunTemp > GameManager.Instance.siliconBurn)
+        {
+            siliconBurnCollisions(collideAtom);
+        }
+    }
+
+    private void pp1Collisions(Atom collideAtom)
+    {
         if (type == AtomType.proton)
         {
             if (collideAtom.type == AtomType.proton)
             {
-                //PPI
                 if (canSpawn)
                 {
                     collideAtom.canSpawn = false;
@@ -326,109 +391,11 @@ public class Atom : MonoBehaviour
                     Destroy(this.gameObject);
                 }
             }
-            if (collideAtom.type == AtomType.Li7)
-            {
-                if (GameManager.Instance.sunTemp > GameManager.Instance.pp2Temp)
-                {
-                    if (canSpawn)
-                    {
-                        Debug.Log("collision p - Li7", this.gameObject);
-                        collideAtom.canSpawn = false;
-                        canSpawn = false;
-
-                        spawn2Atoms(collideAtom, AtomType.He4, AtomType.He4);
-                        GameManager.Instance.raiseSunTemperature(17.35f);
-                        Destroy(collideAtom.gameObject);
-                        Destroy(this.gameObject);
-                    }
-                }
-            }
-            if (collideAtom.type == AtomType.Be7)
-            {
-                if (GameManager.Instance.sunTemp > GameManager.Instance.pp3Temp)
-                {
-                    if (canSpawn)
-                    {
-                        Debug.Log("collision p - Be7", this.gameObject);
-                        collideAtom.canSpawn = false;
-                        canSpawn = false;
-
-                        spawnAtom(collideAtom, AtomType.B8);
-                        GameManager.Instance.raiseSunTemperature(0.14f);
-                        Destroy(collideAtom.gameObject);
-                        Destroy(this.gameObject);
-                    }
-                }
-            }
-            if(collideAtom.type == AtomType.C12)
-                if (GameManager.Instance.sunTemp > GameManager.Instance.CNOTemp)
-                {
-                    if (canSpawn)
-                    {
-                        Debug.Log("collision p - C12", this.gameObject);
-                        collideAtom.canSpawn = false;
-                        canSpawn = false;
-
-                        spawnAtom(collideAtom, AtomType.N13);
-                        GameManager.Instance.raiseSunTemperature(1.94f);
-                        Destroy(collideAtom.gameObject);
-                        Destroy(this.gameObject);
-                    }
-                }
-
-            if (collideAtom.type == AtomType.C13)
-                if (GameManager.Instance.sunTemp > GameManager.Instance.CNOTemp)
-                {
-                    if (canSpawn)
-                    {
-                        Debug.Log("collision p - C13", this.gameObject);
-                        collideAtom.canSpawn = false;
-                        canSpawn = false;
-
-                        spawnAtom(collideAtom, AtomType.N14);
-                        GameManager.Instance.raiseSunTemperature(7.55f);
-                        Destroy(collideAtom.gameObject);
-                        Destroy(this.gameObject);
-                    }
-                }
-
-            if (collideAtom.type == AtomType.N14)
-                if (GameManager.Instance.sunTemp > GameManager.Instance.CNOTemp)
-                {
-                    if (canSpawn)
-                    {
-                        Debug.Log("collision p - N14", this.gameObject);
-                        collideAtom.canSpawn = false;
-                        canSpawn = false;
-
-                        spawnAtom(collideAtom, AtomType.O15);
-                        GameManager.Instance.raiseSunTemperature(1.94f);
-                        Destroy(collideAtom.gameObject);
-                        Destroy(this.gameObject);
-                    }
-                }
-
-            if (collideAtom.type == AtomType.N15)
-                if (GameManager.Instance.sunTemp > GameManager.Instance.CNOTemp)
-                {
-                    if (canSpawn)
-                    {
-                        Debug.Log("collision p - N15", this.gameObject);
-                        collideAtom.canSpawn = false;
-                        canSpawn = false;
-
-                        spawn2Atoms(collideAtom, AtomType.C12, AtomType.He4);
-                        GameManager.Instance.raiseSunTemperature(4.97f);
-                        Destroy(collideAtom.gameObject);
-                        Destroy(this.gameObject);
-                    }
-                }
         }
         else if (type == AtomType.He3)
         {
             if (collideAtom.type == AtomType.He3)
             {
-                //PPI
                 if (canSpawn)
                 {
                     Debug.Log("collision He_3 - He_3", this.gameObject);
@@ -441,60 +408,285 @@ public class Atom : MonoBehaviour
                     Destroy(this.gameObject);
                 }
             }
-            if (collideAtom.type == AtomType.He4)
-            {
-                if (GameManager.Instance.sunTemp > GameManager.Instance.pp3Temp)
-                {
-                    if (canSpawn)
-                    {
-                        Debug.Log("collision He_3 - He_4", this.gameObject);
-                        collideAtom.canSpawn = false;
-                        canSpawn = false;
-
-                        spawnAtom(collideAtom, AtomType.Be7);
-                        GameManager.Instance.raiseSunTemperature(1.59f);
-                        Destroy(collideAtom.gameObject);
-                        Destroy(this.gameObject);
-                    }
-                }
-            }
         }
-        else if (type == AtomType.He4)
-        {
+    }
+    private void pp2Collisions(Atom collideAtom)
+    {
+        if (type == AtomType.He3)
             if (collideAtom.type == AtomType.He4)
             {
-                if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha)
+                if (canSpawn)
                 {
-                    if (canSpawn)
-                    {
-                        Debug.Log("collision He_4 - He_4", this.gameObject);
-                        collideAtom.canSpawn = false;
-                        canSpawn = false;
+                    Debug.Log("collision He_3 - He_4", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
 
-                        spawnAtom(collideAtom, AtomType.Be8);
-                        GameManager.Instance.raiseSunTemperature(-0.09f);
-                        Destroy(collideAtom.gameObject);
-                        Destroy(this.gameObject);
-                    }
+                    spawnAtom(collideAtom, AtomType.Be7);
+                    GameManager.Instance.raiseSunTemperature(1.59f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
                 }
             }
-            if(collideAtom.type == AtomType.Be8)
+        if (type == AtomType.proton)
+        {
+            if (collideAtom.type == AtomType.Li7)
             {
-                if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha)
+                if (canSpawn)
                 {
-                    if (canSpawn)
-                    {
-                        Debug.Log("collision He_4 - Be8", this.gameObject);
-                        collideAtom.canSpawn = false;
-                        canSpawn = false;
+                    Debug.Log("collision p - Li7", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
 
-                        spawnAtom(collideAtom, AtomType.C12);
-                        GameManager.Instance.raiseSunTemperature(7.65f);
-                        Destroy(collideAtom.gameObject);
-                        Destroy(this.gameObject);
-                    }
+                    spawn2Atoms(collideAtom, AtomType.He4, AtomType.He4);
+                    GameManager.Instance.raiseSunTemperature(17.35f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
                 }
             }
         }
     }
+    private void pp3Collisions(Atom collideAtom)
+    {
+        if (type == AtomType.proton)
+        {
+            if (collideAtom.type == AtomType.Be7)
+            {
+                if (canSpawn)
+                {
+                    Debug.Log("collision p - Be7", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.B8);
+                    GameManager.Instance.raiseSunTemperature(0.14f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+    }
+    private void CNO_Collisons(Atom collideAtom)
+    {
+        if (type == AtomType.proton)
+        {
+            if (collideAtom.type == AtomType.C12)
+            {
+                if (canSpawn)
+                {
+                    Debug.Log("collision p - C12", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.N13);
+                    GameManager.Instance.raiseSunTemperature(1.94f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+
+            if (collideAtom.type == AtomType.C13)
+            {
+                if (canSpawn)
+                {
+                    Debug.Log("collision p - C13", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.N14);
+                    GameManager.Instance.raiseSunTemperature(7.55f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+
+            if (collideAtom.type == AtomType.N14)
+            {
+                if (canSpawn)
+                {
+                    Debug.Log("collision p - N14", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.O15);
+                    GameManager.Instance.raiseSunTemperature(1.94f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+
+            if (collideAtom.type == AtomType.N15)
+            {
+                if (canSpawn)
+                {
+                    Debug.Log("collision p - N15", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawn2Atoms(collideAtom, AtomType.C12, AtomType.He4);
+                    GameManager.Instance.raiseSunTemperature(4.97f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+    }
+    private void threeAlphaCollisions(Atom collideAtom)
+    {
+        if (type == AtomType.He4)
+        {
+            if (collideAtom.type == AtomType.He4)
+            {
+                if (canSpawn && collideAtom.canSpawn)
+                {
+                    Debug.Log("collision He_4 - He_4", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.Be8);
+                    GameManager.Instance.raiseSunTemperature(-0.09f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+            if (collideAtom.type == AtomType.Be8)
+            {
+                if (canSpawn)
+                {
+                    Debug.Log("collision He_4 - Be8", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.C12);
+                    GameManager.Instance.raiseSunTemperature(7.65f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+    }
+    private void threeAlpha2Collisions(Atom collideAtom)
+    {
+        if (type == AtomType.He4)
+        {
+            if (collideAtom.type == AtomType.C12)
+            {
+                if (canSpawn && collideAtom.canSpawn)
+                {
+                    Debug.Log("collision He_4 - C12", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.O16);
+                    GameManager.Instance.raiseSunTemperature(7.16f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+    }
+    private void carbonBurnCollisions(Atom collideAtom)
+    {
+        if (type == AtomType.C12)
+        {
+            if (collideAtom.type == AtomType.C12)
+            {
+                if (canSpawn && collideAtom.canSpawn)
+                {
+                    Debug.Log("collision C12 - C12", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.Mg24);
+                    GameManager.Instance.raiseSunTemperature(12.32f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+    }
+    private void neonBurnCollisions(Atom collideAtom)
+    {
+        if (type == AtomType.Ne20)
+        {
+            if (collideAtom.type == AtomType.Ne20)
+            {
+                if (canSpawn && collideAtom.canSpawn)
+                {
+                    Debug.Log("collision Ne20 - Ne20", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawn2Atoms(collideAtom, AtomType.O16, AtomType.Mg24);
+                    GameManager.Instance.raiseSunTemperature(4.59f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+        if (type == AtomType.He4)
+        {
+            if (collideAtom.type == AtomType.Mg24)
+            {
+                if (canSpawn && collideAtom.canSpawn)
+                {
+                    Debug.Log("collision He4 - Mg24", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.Si28);
+                    GameManager.Instance.raiseSunTemperature(4.59f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+
+    }    
+    private void oxygenBurnCollisions(Atom collideAtom)
+    {
+        if (type == AtomType.O16)
+        {
+            if (collideAtom.type == AtomType.O16)
+            {
+                if (canSpawn && collideAtom.canSpawn)
+                {
+                    Debug.Log("collision O16 - O16", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.S32);
+                    GameManager.Instance.raiseSunTemperature(13.14f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+    } 
+    private void siliconBurnCollisions(Atom collideAtom)
+    {
+        if (type == AtomType.Si28)
+        {
+            if (collideAtom.type == AtomType.Si28)
+            {
+                if (canSpawn && collideAtom.canSpawn)
+                {
+                    Debug.Log("collision Si28 - Si28", this.gameObject);
+                    collideAtom.canSpawn = false;
+                    canSpawn = false;
+
+                    spawnAtom(collideAtom, AtomType.Ni56);
+                    GameManager.Instance.raiseSunTemperature(10.93f);
+                    Destroy(collideAtom.gameObject);
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
 }

@@ -38,13 +38,19 @@ public class GameManager : MonoBehaviour
     public float B8LiveSpan;
     public float N13LiveSpan;
     public float O15LiveSpan;
+    public float Mg24LiveSpan;
+    public float S32LiveSpan;
     public float sunTemp;
 
     public float pp2Temp;
     public float pp3Temp;
     public float CNOTemp;
     public float threeAlpha;
-
+    public float threeAlpha2;
+    public float carbonBurn;
+    public float neonBurn;
+    public float oxygenBurn;
+    public float siliconBurn;
 
     public static GameManager Instance { get; private set; }
     private void Awake()
