@@ -23,12 +23,9 @@ public class SunScript : MonoBehaviour
 
     void updateSunRadiusAndColor()
     {
-        float scale = Mathf.Pow((GameManager.Instance.sunTemp + 8.375f) / 600f, 1f / 6f);
-        Debug.Log(GameManager.Instance.sunTemp + 8.375f);
-        Debug.Log((GameManager.Instance.sunTemp + 8.375f) / 600f);
-        Debug.Log("Sun scale: " +scale );
+        float scale = Mathf.Pow((GameManager.Instance.sunTemp +5.8f) / 3500f, 1f / 9f);
         this.transform.localScale = Vector3.one * scale;
-        sunSprite.color = new Color(1,( -1 * 270.5882352941176f * scale + 365.29411764705884f)/255 , 0 , 1);
+        sunSprite.color = new Color(1,( -1 * 460f * scale + 460f) /255 , 0 , 1);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

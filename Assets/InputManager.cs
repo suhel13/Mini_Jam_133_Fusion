@@ -39,16 +39,19 @@ public class InputManager : MonoBehaviour
 
     public void click(InputAction.CallbackContext ctx)
     {
-        if(ctx.performed)
+        if (Time.timeScale > 0)
         {
-            Debug.Log("L click performed");
-            tempProton = Instantiate(GameManager.Instance.protonPrefab, mousePosWorld, Quaternion.identity);
-        }
-        
-        if(ctx.canceled)
-        {
-            Debug.Log("L click canceled");
-            tempProton.GetComponent<Rigidbody2D>().velocity = (mousePosWorld - tempProton.transform.position).normalized * GameManager.Instance.protonSpeed;
+            if (ctx.performed)
+            {
+                Debug.Log("L click performed");
+                tempProton = Instantiate(GameManager.Instance.protonPrefab, mousePosWorld, Quaternion.identity);
+            }
+
+            if (ctx.canceled)
+            {
+                Debug.Log("L click canceled");
+                tempProton.GetComponent<Rigidbody2D>().velocity = (mousePosWorld - tempProton.transform.position).normalized * GameManager.Instance.protonSpeed;
+            }
         }
     }
 }

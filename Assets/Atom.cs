@@ -143,7 +143,7 @@ public class Atom : MonoBehaviour
             case AtomType.He3:
                 return 3;
             case AtomType.He4:
-                return 4;;
+                return 4;
             case AtomType.Li7:
                 return 7;
             case AtomType.C12:
@@ -182,7 +182,7 @@ public class Atom : MonoBehaviour
     }
     float getRadius(AtomType type)
     {
-        return Mathf.Pow(atomMass / 200, 1f / 3f);
+        return Mathf.Pow(getMass(type) / 200f, 1f / 3f);
     }
     void init_Radius()
     {
@@ -197,81 +197,82 @@ public class Atom : MonoBehaviour
     }
     void spawnAtom(Atom collideAtom, AtomType spawnType)
     {
-        switch (spawnType)
-        {
-            case AtomType.proton:
-                spawnedAtom = Instantiate(GameManager.Instance.protonPrefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.D:
-                spawnedAtom = Instantiate(GameManager.Instance.DeuterPrefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.He3:
-                spawnedAtom = Instantiate(GameManager.Instance.He_3Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.He4:
-                spawnedAtom = Instantiate(GameManager.Instance.He_4Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.Be7:
-                spawnedAtom = Instantiate(GameManager.Instance.Be_7Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.Be8:
-                spawnedAtom = Instantiate(GameManager.Instance.Be_8Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.Li7:
-                spawnedAtom = Instantiate(GameManager.Instance.Li_7Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.B8:
-                spawnedAtom = Instantiate(GameManager.Instance.B_8Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.C12:
-                spawnedAtom = Instantiate(GameManager.Instance.C_12Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.N13:
-                spawnedAtom = Instantiate(GameManager.Instance.N_13Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.C13:
-                spawnedAtom = Instantiate(GameManager.Instance.C_13Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.N14:
-                spawnedAtom = Instantiate(GameManager.Instance.N_14Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.O15:
-                spawnedAtom = Instantiate(GameManager.Instance.O_15Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-            case AtomType.N15:
-                spawnedAtom = Instantiate(GameManager.Instance.N_15Prefab, (transform.position + collideAtom.transform.position) / 2, Quaternion.identity);
-                break;
-        }
+        spawnedAtom = spawnAtom(collideAtom, spawnType, Vector2.zero, Vector2.zero);
         spawnedAtom.GetComponent<Rigidbody2D>().velocity = cacluateSpeed(rb2D.velocity, collideAtom.rb2D.velocity, atomMass, collideAtom.atomMass, spawnedAtom.GetComponent<Atom>().atomMass);
     }
 
-    void spawnAtom(Atom collideAtom, AtomType spawnType, Vector2 OffsetDir, Vector2 velocity)
+    GameObject spawnAtom(Atom collideAtom, AtomType spawnType, Vector2 OffsetDir, Vector2 velocity)
     {
+        Vector3 spawnPos = (transform.position * atomMass + collideAtom.transform.position * collideAtom.atomMass) / (atomMass + collideAtom.atomMass);
         OffsetDir *= 1.5f;
         switch (spawnType)
         {
             case AtomType.proton:
-                spawnedAtom = Instantiate(GameManager.Instance.protonPrefab, (transform.position + collideAtom.transform.position) / 2 + new Vector3(OffsetDir.x, OffsetDir.y, 0) * getRadius(spawnType), Quaternion.identity);
+                spawnedAtom = Instantiate(GameManager.Instance.protonPrefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
                 break;
             case AtomType.D:
-                spawnedAtom = Instantiate(GameManager.Instance.DeuterPrefab, (transform.position + collideAtom.transform.position) / 2 + new Vector3(OffsetDir.x, OffsetDir.y, 0) * getRadius(spawnType), Quaternion.identity);
+                spawnedAtom = Instantiate(GameManager.Instance.DeuterPrefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
                 break;
             case AtomType.He3:
-                spawnedAtom = Instantiate(GameManager.Instance.He_3Prefab, (transform.position + collideAtom.transform.position) / 2 + new Vector3(OffsetDir.x, OffsetDir.y, 0) * getRadius(spawnType), Quaternion.identity);
+                spawnedAtom = Instantiate(GameManager.Instance.He_3Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
                 break;
             case AtomType.He4:
-                spawnedAtom = Instantiate(GameManager.Instance.He_4Prefab, (transform.position + collideAtom.transform.position) / 2 + new Vector3(OffsetDir.x, OffsetDir.y, 0) * getRadius(spawnType), Quaternion.identity);
+                spawnedAtom = Instantiate(GameManager.Instance.He_4Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
                 break;
             case AtomType.Be7:
+                spawnedAtom = Instantiate(GameManager.Instance.Be_7Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.Be8:
+                spawnedAtom = Instantiate(GameManager.Instance.Be_8Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
                 break;
             case AtomType.Li7:
-                spawnedAtom = Instantiate(GameManager.Instance.Li_7Prefab, (transform.position + collideAtom.transform.position) / 2 + new Vector3(OffsetDir.x, OffsetDir.y, 0) * getRadius(spawnType), Quaternion.identity);
+                spawnedAtom = Instantiate(GameManager.Instance.Li_7Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.B8:
+                spawnedAtom = Instantiate(GameManager.Instance.B_8Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
                 break;
             case AtomType.C12:
-                spawnedAtom = Instantiate(GameManager.Instance.C_12Prefab, (transform.position + collideAtom.transform.position) / 2 + new Vector3(OffsetDir.x, OffsetDir.y, 0) * getRadius(spawnType), Quaternion.identity);
+                spawnedAtom = Instantiate(GameManager.Instance.C_12Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.N13:
+                spawnedAtom = Instantiate(GameManager.Instance.N_13Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.C13:
+                spawnedAtom = Instantiate(GameManager.Instance.C_13Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.N14:
+                spawnedAtom = Instantiate(GameManager.Instance.N_14Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.O15:
+                spawnedAtom = Instantiate(GameManager.Instance.O_15Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.N15:
+                spawnedAtom = Instantiate(GameManager.Instance.N_15Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.O16:
+                spawnedAtom = Instantiate(GameManager.Instance.O_16Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.Ne20:
+                spawnedAtom = Instantiate(GameManager.Instance.Ne_20Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.Mg24:
+                spawnedAtom = Instantiate(GameManager.Instance.Mg_24Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.Si28:
+                spawnedAtom = Instantiate(GameManager.Instance.Si_28Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.S32:
+                spawnedAtom = Instantiate(GameManager.Instance.S_32Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            case AtomType.Ni56:
+                spawnedAtom = Instantiate(GameManager.Instance.Ni_56Prefab, spawnPos + new Vector3(OffsetDir.x, OffsetDir.y, 0), Quaternion.identity);
+                break;
+            default:
+                Debug.Log("Spawn not suported", this.gameObject);
                 break;
         }
         spawnedAtom.GetComponent<Rigidbody2D>().velocity = velocity;
+        return spawnedAtom;
     }
 
     Tuple<float, float> calculate2AtomsVelocityValue(Vector2 p0, float m1, float m2)
@@ -285,12 +286,21 @@ public class Atom : MonoBehaviour
         {
             p0 = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
         }
-        Vector2 spawn1OffsetDir = Quaternion.Euler(0f, 0f, 45f) * p0.normalized;
-        Vector2 spawn2OffsetDir = Quaternion.Euler(0f, 0f, -45f) * p0.normalized;
+        Vector2 spawn1OffsetDir = (Quaternion.Euler(0f, 0f, 45f) * p0).normalized;
+        Vector2 spawn2OffsetDir = (Quaternion.Euler(0f, 0f, -45f) * p0).normalized;
         Tuple<float, float> velocityValue = calculate2AtomsVelocityValue(p0, getMass(spawnType1), getMass(spawnType2));
 
-        spawnAtom(collideAtom, spawnType1, spawn1OffsetDir, spawn1OffsetDir * velocityValue.Item1);
-        spawnAtom(collideAtom, spawnType2, spawn2OffsetDir, spawn2OffsetDir * velocityValue.Item2);
+        Debug.Log(spawnType1);
+        Debug.Log(spawn1OffsetDir * getRadius(spawnType1));
+        Debug.Log(getRadius(spawnType1));
+        Debug.Log(getMass(AtomType.C12));
+
+        Debug.Log(spawnType2);
+        Debug.Log(spawn2OffsetDir * getRadius(spawnType2));
+        Debug.Log(getRadius(spawnType2));
+
+        spawnAtom(collideAtom, spawnType1, spawn1OffsetDir * getRadius(spawnType1), spawn1OffsetDir * velocityValue.Item1);
+        spawnAtom(collideAtom, spawnType2, spawn2OffsetDir * getRadius(spawnType2), spawn2OffsetDir * velocityValue.Item2);
     }
 
     void spawn3Atoms(Atom collideAtom, AtomType spawnType1, AtomType spawnType2, AtomType spawnType3)
@@ -302,13 +312,13 @@ public class Atom : MonoBehaviour
         }
         spawnAtom(collideAtom, spawnType1, Vector2.zero, p0 / 3 / getMass(spawnType1));
 
-        Vector2 spawn2OffsetDir = Quaternion.Euler(0f, 0f, 60f) * p0.normalized;
-        Vector2 spawn3OffsetDir = Quaternion.Euler(0f, 0f, -60f) * p0.normalized;
+        Vector2 spawn2OffsetDir = (Quaternion.Euler(0f, 0f, 60f) * p0).normalized;
+        Vector2 spawn3OffsetDir = (Quaternion.Euler(0f, 0f, -60f) * p0).normalized;
 
         Tuple<float, float> velocityValue = calculate2AtomsVelocityValue(p0, getMass(spawnType1), getMass(spawnType2));
 
-        spawnAtom(collideAtom, spawnType2, spawn2OffsetDir * (getRadius(spawnType2) + getRadius(spawnType1)) * 2f, spawn2OffsetDir * p0.magnitude / 3 / getMass(spawnType2));
-        spawnAtom(collideAtom, spawnType3, spawn3OffsetDir * (getRadius(spawnType3) + getRadius(spawnType1)) * 2f, spawn3OffsetDir * p0.magnitude / 3 / getMass(spawnType3));
+        spawnAtom(collideAtom, spawnType2, spawn2OffsetDir * (getRadius(spawnType2) + getRadius(spawnType1)), spawn2OffsetDir * p0.magnitude / 3 / getMass(spawnType2));
+        spawnAtom(collideAtom, spawnType3, spawn3OffsetDir * (getRadius(spawnType3) + getRadius(spawnType1)), spawn3OffsetDir * p0.magnitude / 3 / getMass(spawnType3));
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -323,35 +333,35 @@ public class Atom : MonoBehaviour
         {
             pp2Collisions(collideAtom);
         }
-        else if (GameManager.Instance.sunTemp > GameManager.Instance.pp3Temp)
+        if (GameManager.Instance.sunTemp > GameManager.Instance.pp3Temp)
         {
             pp3Collisions(collideAtom);
         }
-        else if (GameManager.Instance.sunTemp > GameManager.Instance.CNOTemp)
+        if (GameManager.Instance.sunTemp > GameManager.Instance.CNOTemp)
         {
             CNO_Collisons(collideAtom);
         }
-        else if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha)
+        if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha)
         {
             threeAlphaCollisions(collideAtom);
         }
-        else if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha2)
+        if (GameManager.Instance.sunTemp > GameManager.Instance.threeAlpha2)
         {
-            threeAlpha2Collisions(collideAtom);
+            //threeAlpha2Collisions(collideAtom);
         }
-        else if (GameManager.Instance.sunTemp > GameManager.Instance.carbonBurn)
+        if (GameManager.Instance.sunTemp > GameManager.Instance.carbonBurn)
         {
             carbonBurnCollisions(collideAtom);
         }
-        else if (GameManager.Instance.sunTemp > GameManager.Instance.neonBurn)
+        if (GameManager.Instance.sunTemp > GameManager.Instance.neonBurn)
         {
             neonBurnCollisions(collideAtom);
         }
-        else if (GameManager.Instance.sunTemp > GameManager.Instance.oxygenBurn)
+        if (GameManager.Instance.sunTemp > GameManager.Instance.oxygenBurn)
         {
             oxygenBurnCollisions(collideAtom);
         }
-        else if (GameManager.Instance.sunTemp > GameManager.Instance.siliconBurn)
+        if (GameManager.Instance.sunTemp > GameManager.Instance.siliconBurn)
         {
             siliconBurnCollisions(collideAtom);
         }
@@ -682,11 +692,5 @@ public class Atom : MonoBehaviour
             }
         }
     }
-
-
-
-
-
-
 
 }
