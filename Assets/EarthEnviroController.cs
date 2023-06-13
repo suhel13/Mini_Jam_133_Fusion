@@ -21,8 +21,11 @@ public class EarthEnviroController : MonoBehaviour
     public SpriteRenderer burnMarks;
     public SpriteRenderer oceanBottomDry;
     public SpriteRenderer oceanBottomSemiDry;
+    public SpriteRenderer trees;
+    public SpriteRenderer treesHalfDead;
+    public SpriteRenderer treesAllDead;
 
-    [Range(0,9)] public float Temp;
+    [Range(0,10)] public float Temp;
 
     public float rotateSpeed;
     // Start is called before the first frame update
@@ -40,7 +43,7 @@ public class EarthEnviroController : MonoBehaviour
         if (Application.IsPlaying(gameObject))
         {
             transform.eulerAngles += Vector3.forward * rotateSpeed * Time.deltaTime;
-            Temp = Mathf.Log(GameManager.Instance.sunTemp, 3.714011909f) - 1;
+            Temp = Mathf.Pow(GameManager.Instance.sunTemp - 1f, 1/3.714011909f);
         }
     }
 
@@ -62,6 +65,10 @@ public class EarthEnviroController : MonoBehaviour
         burnMarks.color = new Color(1, 1, 1, 0);
         oceanBottomDry.color = new Color(1, 1, 1, 1);
         oceanBottomSemiDry.color = new Color(1, 1, 1, 0);
+
+        trees.color = new Color(1, 1, 1, 0);
+        treesHalfDead.color = new Color(1, 1, 1, 0);
+        treesAllDead.color = new Color(1, 1, 1, 0);
     }
 
     void updateEnviroment()
@@ -101,24 +108,32 @@ public class EarthEnviroController : MonoBehaviour
         }
         else if(Temp <= 5)
         {
-            grassDessert.color = new Color(1, 1, 1, Temp - 4);
+            trees.color = new Color(1, 1, 1, Temp - 4);
         }
         else if(Temp <= 6)
         {
-            dessert.color = new Color(1, 1, 1, Temp - 5);
+            trees.color = new Color(1, 1, 1, 6 - Temp);
+            treesHalfDead.color = new Color(1, 1, 1, Temp - 5);
+            grassDessert.color = new Color(1, 1, 1, Temp - 5);
         }
         else if(Temp <= 7)
         {
-            oceanBottomSemiDry.color = new Color(1, 1, 1, Temp - 6);
+            treesHalfDead.color = new Color(1, 1, 1, 7 - Temp);
+            treesAllDead.color = new Color(1, 1, 1, Temp - 6);
+            dessert.color = new Color(1, 1, 1, Temp - 6);
         }
-        else if (Temp <=8)
+        else if(Temp <= 8)
         {
-            dessertMountains.color = new Color(1, 1, 1, Temp - 7);
-            sea.color = new Color(1, 1, 1, 8 - Temp);
+            oceanBottomSemiDry.color = new Color(1, 1, 1, Temp - 7);
         }
         else if (Temp <=9)
         {
-            burnMarks.color = new Color(1, 1, 1, Temp - 8);
+            dessertMountains.color = new Color(1, 1, 1, Temp - 8);
+            sea.color = new Color(1, 1, 1, 9 - Temp);
+        }
+        else if (Temp <=10)
+        {
+            burnMarks.color = new Color(1, 1, 1, Temp - 9);
         }
     }
 }

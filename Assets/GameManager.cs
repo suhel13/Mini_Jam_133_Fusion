@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
 
     void updateTempUI()
     {
-        tempSlider.value = Mathf.Log(GameManager.Instance.sunTemp, 3.714011909f) - 1;
+        tempSlider.value = Mathf.Pow(GameManager.Instance.sunTemp , 1/3.714011909f);
         tempValueText.text = Mathf.Round(sunTemp * 10) / 10 + " M";
     }
     public void raiseSunTemperature(float EnergyMeV)
@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
         if (sunTemp > CNOTemp)
             energyGainBoost = 4;
         else if (sunTemp > neonBurn)
-            energyGainBoost = 10;
+            energyGainBoost = 8;
         else
             energyGainBoost = 1;
 
