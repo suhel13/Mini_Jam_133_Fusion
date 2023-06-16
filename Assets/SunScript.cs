@@ -23,15 +23,19 @@ public class SunScript : MonoBehaviour
 
     void updateSunRadiusAndColor()
     {
-        float scale = Mathf.Pow((GameManager.Instance.sunTemp +5.8f) / 3500f, 1f / 9f);
+        float scale = Mathf.Pow((GameManager.Instance.sunTemp + 5.8f) / 3500f, 1f / 9f);
         this.transform.localScale = Vector3.one * scale;
-        sunSprite.color = new Color(1,( -1 * 460f * scale + 460f) /255 , 0 , 1);
+        sunSprite.color = new Color(1, (-1 * 460f * scale + 460f) / 255, 0, 1);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(Mathf.Abs( Vector3.Angle(collision.gameObject.GetComponent<Rigidbody2D>().velocity, collision.transform.position - this.transform.position)) < bounseAngle)
         {
-            collision.gameObject.GetComponent<Rigidbody2D>().velocity *= -1;
+            Debug.Log("bounse", this.gameObject);
+            float angle = Vector2.SignedAngle(collision.gameObject.GetComponent<Rigidbody2D>().velocity, (collision.transform.position - this.transform.position).normalized);
+            Debug.Log(angle);
+           
+            collision.gameObject.GetComponent<Rigidbody2D>().velocity = Quaternion.AngleAxis((angle * 2) - 180, Vector3.forward) * collision.gameObject.GetComponent<Rigidbody2D>().velocity;
         }
     }
     private void OnTriggerStay2D(Collider2D collision)

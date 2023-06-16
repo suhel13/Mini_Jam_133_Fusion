@@ -3117,17 +3117,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 639490515961778968, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 639490515961778968, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_Name
       value: ProtonPrefab (17)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450765, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_RootOrder
@@ -3473,6 +3469,10 @@ PrefabInstance:
     - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_Name
       value: ProtonPrefab (16)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450765, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_RootOrder
@@ -7490,6 +7490,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeuterPrefab (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 230326433123528644, guid: e2f525179a3b589418575903f9ea9c61, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e2f525179a3b589418575903f9ea9c61, type: 3}
 --- !u!1 &476488861
@@ -9761,6 +9765,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ProtonPrefab (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450765, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_RootOrder
       value: 10
@@ -10262,6 +10270,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeuterPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 230326433123528644, guid: e2f525179a3b589418575903f9ea9c61, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e2f525179a3b589418575903f9ea9c61, type: 3}
 --- !u!1 &677047075
@@ -10486,6 +10498,10 @@ PrefabInstance:
     - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_Name
       value: ProtonPrefab (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450765, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_RootOrder
@@ -15881,6 +15897,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeuterPrefab (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 230326433123528644, guid: e2f525179a3b589418575903f9ea9c61, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e2f525179a3b589418575903f9ea9c61, type: 3}
 --- !u!1 &1088687059
@@ -16104,6 +16124,10 @@ PrefabInstance:
     - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_Name
       value: ProtonPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450765, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_RootOrder
@@ -23322,6 +23346,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ProtonPrefab (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450765, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -24019,6 +24047,10 @@ PrefabInstance:
     - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_Name
       value: ProtonPrefab (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450765, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_RootOrder
@@ -27157,6 +27189,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ProtonPrefab (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450765, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -28306,6 +28342,10 @@ PrefabInstance:
     - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_Name
       value: ProtonPrefab (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8242702051077450762, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8242702051077450765, guid: ad75cdcf2c197c6428ee78a83bf70786, type: 3}
       propertyPath: m_RootOrder

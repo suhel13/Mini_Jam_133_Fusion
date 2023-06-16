@@ -134,6 +134,8 @@ MonoBehaviour:
   type: 6
   canSpawn: 1
   rb2D: {fileID: 0}
+  vibrationForce: 2
+  vibrationCooldownTimer: 5
 --- !u!50 &5022011359252689020
 Rigidbody2D:
   serializedVersion: 4

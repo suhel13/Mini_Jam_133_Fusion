@@ -17,6 +17,9 @@ public class Atom : MonoBehaviour
     public Rigidbody2D rb2D;
     GameObject spawnedAtom;
 
+    [SerializeField] float vibrationForce;
+    [SerializeField] float vibrationCooldownTimer;
+    float vibrationTimer;
 
     bool hasLiveSpan = false;
     float livespanTimer = 0;
@@ -51,6 +54,14 @@ public class Atom : MonoBehaviour
     {
         if (canSpawn == false && lifeTime > GameManager.Instance.minTimeToFuze)
             canSpawn = true;
+
+        if (vibrationTimer >= vibrationCooldownTimer)
+        {
+            rb2D.AddForce(new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * vibrationForce * (Mathf.Pow(GameManager.Instance.sunTemp, 1 / 3.714011909f) - 1) * atomMass);
+            vibrationTimer = 0;
+        }
+        else
+            vibrationTimer += Time.deltaTime;
 
         if (hasLiveSpan)
         {
