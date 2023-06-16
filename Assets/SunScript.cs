@@ -18,7 +18,14 @@ public class SunScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        updateSunRadiusAndColor();
+        if (GameManager.Instance.sunTemp < 4200)
+        {
+            updateSunRadiusAndColor();
+        }
+        else
+        {
+            GetComponent<SuperNova>().StartCollapseSequense();
+        }
     }
 
     void updateSunRadiusAndColor()
@@ -27,6 +34,7 @@ public class SunScript : MonoBehaviour
         this.transform.localScale = Vector3.one * scale;
         sunSprite.color = new Color(1, (-1 * 460f * scale + 460f) / 255, 0, 1);
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(Mathf.Abs( Vector3.Angle(collision.gameObject.GetComponent<Rigidbody2D>().velocity, collision.transform.position - this.transform.position)) < bounseAngle)

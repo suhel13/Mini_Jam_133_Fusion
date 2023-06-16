@@ -52,8 +52,6 @@ public class Atom : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canSpawn == false && lifeTime > GameManager.Instance.minTimeToFuze)
-            canSpawn = true;
 
         if (vibrationTimer >= vibrationCooldownTimer)
         {
