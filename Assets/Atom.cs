@@ -61,7 +61,7 @@ public class Atom : MonoBehaviour
         else
             vibrationTimer += Time.deltaTime;
 
-        if (hasLiveSpan)
+        if (hasLiveSpan && canSpawn)
         {
             switch (type)
             {

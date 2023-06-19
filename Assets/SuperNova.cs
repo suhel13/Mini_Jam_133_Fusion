@@ -8,11 +8,23 @@ public class SuperNova : MonoBehaviour
     bool isCollapsing = false;
     [SerializeField] int collapseSteps;
     [SerializeField] float timeBetweenSteps;
+    [SerializeField] float explosionStartVelocity;
+    public GameObject explosionParticles;
+
     List<Transform> atomsInSun = new List<Transform>();
-    
+
+    private void Awake()
+    {
+        explosionParticles.SetActive(false);
+    }
     void explode()
     {
-
+        foreach (Transform item in atomsInSun)
+        {
+            item.localScale = Vector3.one;
+            item.GetComponent<Rigidbody2D>().velocity = (item.position - this.transform.position).normalized * explosionStartVelocity;
+        }
+        explosionParticles.SetActive(true);
     }
 
     public void StartCollapseSequense()
@@ -33,6 +45,7 @@ public class SuperNova : MonoBehaviour
             }
             StartCoroutine(collase());
         }
+
     }
 
     IEnumerator collase()
@@ -47,6 +60,7 @@ public class SuperNova : MonoBehaviour
             }
             yield return new WaitForSeconds(timeBetweenSteps);
         }
+        explode();
     }
 
 }

@@ -39,9 +39,7 @@ public class SunScript : MonoBehaviour
     {
         if(Mathf.Abs( Vector3.Angle(collision.gameObject.GetComponent<Rigidbody2D>().velocity, collision.transform.position - this.transform.position)) < bounseAngle)
         {
-            Debug.Log("bounse", this.gameObject);
             float angle = Vector2.SignedAngle(collision.gameObject.GetComponent<Rigidbody2D>().velocity, (collision.transform.position - this.transform.position).normalized);
-            Debug.Log(angle);
            
             collision.gameObject.GetComponent<Rigidbody2D>().velocity = Quaternion.AngleAxis((angle * 2) - 180, Vector3.forward) * collision.gameObject.GetComponent<Rigidbody2D>().velocity;
         }

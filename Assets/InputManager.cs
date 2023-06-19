@@ -5,15 +5,10 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-
-
     Vector3 mousePos;
     Vector3 mousePosWorld;
     Camera cam;
     public GameObject tempProton;
-
-
-
 
     // Start is called before the first frame update
     void Start()
