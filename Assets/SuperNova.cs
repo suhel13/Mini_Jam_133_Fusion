@@ -32,6 +32,7 @@ public class SuperNova : MonoBehaviour
         if (isCollapsing == false)
         {
             isCollapsing = true;
+            GameManager.Instance.isColapsing = true;
             startingScale = transform.localScale.x;
             Collider2D[] atomsInSunCollider = Physics2D.OverlapCircleAll(transform.position, startingScale * 5);
             atomsInSun.Clear();

@@ -1356,7 +1356,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Next phase at T = 14M
+  m_text: Next phase at T = 20M
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2363,7 +2363,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 2
   m_MinValue: 0
-  m_MaxValue: 10
+  m_MaxValue: 9.5
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
@@ -18073,6 +18073,7 @@ MonoBehaviour:
   neonBurn: 1500
   oxygenBurn: 2000
   siliconBurn: 3500
+  isColapsing: 0
 --- !u!4 &1248905691
 Transform:
   m_ObjectHideFlags: 0

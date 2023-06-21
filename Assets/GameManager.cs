@@ -60,6 +60,8 @@ public class GameManager : MonoBehaviour
 
     float energyGainBoost = 1;
 
+    public bool isColapsing = true;
+
     public static GameManager Instance { get; private set; }
     public PopUpManager popUpManager { get; private set; }
     private void Awake()

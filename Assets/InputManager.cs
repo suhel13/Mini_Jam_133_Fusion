@@ -34,7 +34,7 @@ public class InputManager : MonoBehaviour
 
     public void click(InputAction.CallbackContext ctx)
     {
-        if (Time.timeScale > 0)
+        if (Time.timeScale > 0 && GameManager.Instance.isColapsing == false)
         {
             if (ctx.performed)
             {
